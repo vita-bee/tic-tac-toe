@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Tic Tac Toe</title>
+</head>
+<body>
+    <div class="container">
+       <div class="header">
+            <div class="greetingContainer">Welcome to Tic Tac Toe, Best of Five</div>
+       </div>
+
+       <div class="contentContainer">
+            <div class="formContainer">
+                <div class="formSection">
+                    <form id="addPlayersForm">
+                        <div class="formFieldsContainer">
+                            <legend class="formHeader">Add Players</legend>
+                            <div class="formGroup">
+                                <div class='form-row'>
+                                    <label for="player_one">Player One</label>
+                                    <input type="text" id="player_one" name="player_one"  placeholder="enter name">
+                                </div>
+                                <div class='form-row'>
+                                    <label for="player_two">Player Two</label>
+                                    <input type="text" id="player_two" name="player_two"  placeholder="enter name">
+                                </div>
+                            </div>
+                            <button type="submit" id="addPlayersBtn">Add Players</button>
+                        </div>
+                        
+                    </form>
+                </div>
+            </div>
+
+            <div id="gameBoard">
+                <button class="cellBtn" id="cellBtn0" data-cell-id="0"></button>
+                <button class="cellBtn" id="cellBtn1" data-cell-id="1"></button>
+                <button class="cellBtn" id="cellBtn2" data-cell-id="2"></button>
+                <button class="cellBtn" id="cellBtn3" data-cell-id="3"></button>
+                <button class="cellBtn" id="cellBtn4" data-cell-id="4"></button>
+                <button class="cellBtn" id="cellBtn5" data-cell-id="5"></button>
+                <button class="cellBtn" id="cellBtn6" data-cell-id="6"></button>
+                <button class="cellBtn" id="cellBtn7" data-cell-id="7"></button>
+                <button class="cellBtn" id="cellBtn8" data-cell-id="8"></button>
+            </div>
+
+            <div id="resultDisplay"></div>
+
+            <div id="scoreBoardContainer">
+                <div>Score Board</div>
+                <div id="roundInfo">Round#:</div>
+                <div id="playerOneInfo"></div>
+                <div id="playerTwoInfo"></div>
+                
+            </div>
+
+
+
+
+
+
+
+
+            
+      </div>
+</body>
+    <script type="text/javascript" src="tictactoe.js" defer></script>
+</html>

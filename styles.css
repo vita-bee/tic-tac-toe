@@ -1,0 +1,230 @@
+:root {
+      --button-color: #007bff; 
+      --darkSection-color: #393f4d;
+      --contentSection-color: #bccbde;
+    }
+
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  /* Improve text rendering */
+  -webkit-font-smoothing: antialiased;
+  /* FONT FAMILY STACK */
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+/* Inherit fonts for form controls */
+input, button, textarea, select {
+  font: inherit;
+}
+
+
+@media (min-width: 1400px) {  /* apply special width only on wide screens */
+  .container {
+    width: 85%;
+    max-width: 1200px; /* optional cap so it doesn’t stretch forever */
+  }
+}
+
+button:active {
+  transform: scale(0.98) translateY(2px); /* Scale down and move down */
+  box-shadow: 0px 2px 0px #666;
+}
+
+.container {
+  text-align: center;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: 1fr 5fr ;
+  padding-bottom: 40px;
+  margin: 0 auto;
+}
+
+.header {
+  background-color: var(--darkSection-color);
+  color: rgb(226, 222, 222);
+  font-size: 12px;
+  grid-column: 1 / 3;
+  grid-row: 1;
+  display: grid;
+  box-shadow: -10px 0px 10px -5px rgba(251, 249, 249, 0.5);
+  
+}
+
+p .inline{
+    display:inline-block;
+}
+
+.greetingContainer{
+    grid-column: 1;
+    grid-row: 1;
+    padding: 20px;
+    justify-content: left;
+    justify-items: left;
+}
+
+.contentContainer {
+  background-color: var(--contentSection-color);
+  grid-column: 1 / 3;
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 1fr 244px 1fr;
+  gap: 10px;
+  padding-bottom: 30px;
+  padding-top: 20px;
+  padding-right: 20px;
+  padding-left: 20px;
+  box-shadow: -10px 0px 10px -5px rgba(251, 249, 249, 0.5);
+}
+
+.formContainer {
+  grid-column: 1;
+  grid-row: 1 / 3 ;
+}
+
+#gameBoard {
+  grid-column: 2;
+  grid-row: auto;
+  display: grid;
+  align-content: center;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 0px;
+  xbackground-color: whitesmoke;
+  xbox-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+  xborder-radius: 5px;
+  xborder:none;
+  margin: 40px;
+  max-width: calc(1 * max-content); 
+  align-items:start;
+  justify-items: start;
+}
+
+#gameBoard .cellBtn {
+  background-color: whitesmoke;
+  color: black;
+  height: 80px;
+  width: 80px;
+  min-width:80px;
+  min-height:80px;
+  border-radius: 8px;
+  border: none;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+  padding-bottom: 10px;
+  font-size: 40px;
+  font-weight: 800;
+}
+
+.cellBtn p {
+  color: blue;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 10px;
+  text-align: center;
+}
+
+.cellBtn #cellBtn0 { grid-row: 1; grid-column: 1; }
+.cellBtn #cellBtn1 { grid-row: 1; grid-column: 2; }
+.cellBtn #cellBtn2 { grid-row: 1; grid-column: 3; }
+.cellBtn #cellBtn3 { grid-row: 2; grid-column: 1; }
+.cellBtn #cellBtn4 { grid-row: 2; grid-column: 2; }
+.cellBtn #cellBtn5 { grid-row: 2; grid-column: 3; }
+.cellBtn #cellBtn6  {grid-row: 3; grid-column: 1; }
+.cellBtn #cellBtn7 { grid-row: 3; grid-column: 2; }
+.cellBtn #cellBtn8 { grid-row: 3; grid-column: 3; }
+
+#resultDisplay {
+  color: red;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.scoreBoardContainer {
+  grid-column: 3;
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+
+}
+
+.formFieldsContainer{
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    font-size: 12px;
+    background-color: whitesmoke;
+    padding: 10px;
+    
+}
+.formGroup {
+    display:flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+legend {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.form-row {
+  flex-direction: column;
+  align-items: flex-start; /* To avoid stretching */
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.form-row label {
+    font-family: Roboto, sans-serif;
+    letter-spacing: .2em;
+    font-size: 7px;
+    font-weight: 600;
+    color: rgb(101, 101, 101);
+    text-transform: uppercase;
+}
+
+.form-row input {
+  background-color: #FFFFFF;
+  border: 1px solid #D6D9DC;
+  border-radius: 3px;
+  width: 80px;
+  padding: 7px;
+  font-size: 10px;
+}
+
+.form-row input:focus {
+      outline: none;
+      border-color: blue; 
+      box-shadow: 0 0 5px rgba(0, 0, 255, 0.5);
+}
+
+.form-row input::placeholder {
+  color: #999; 
+  font-style: italic; 
+}
+
+.form-row input[type='text']:invalid {
+  border: 1px solid #D55C5F;
+  color: #D55C5F;
+  box-shadow: none; /* Remove default red glow in Firefox */
+}
+
+#addPlayersBtn {
+    background-color: #06306f;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    width:80px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    box-shadow: 0px 5px 0px #999;
+}
+
+
+
+
