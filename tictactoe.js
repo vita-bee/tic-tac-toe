@@ -1,7 +1,33 @@
+// Pub/Sub Module
+const PubSub = (function() {
+    const events = {};
+    function subscribe(event, callback) {
+        if (typeof callback !== 'function') {
+            throw new Error('Callback must be a function');
+        }
+        if (!events[event]) {
+            events[event] = [];
+        }
+        // Prevent duplicate subscriptions
+        if (!events[event].includes(callback)) {
+            events[event].push(callback);
+        }
+    }
+    function publish(event, data) {
+        if (events[event]) {
+            events[event].forEach(callback => callback(data));
+        }
+    }
+    function unsubscribe(event, callback) {
+        if (events[event]) {
+            events[event] = events[event].filter(cb => cb !== callback);
+        }
+    }
+    return {subscribe, publish, unsubscribe};
+})();
 
 const gameBoard = (function () {
-  const gameBoardArr = [null, null,null, null, null, null, null,null,null];
-  let lastPlayedCell = 0;
+  let gameBoardArr = [null, null, null, null, null, null, null, null, null];
   const row1 = () => {return (isWinningTriple(0,1,2))}
   const row2 = () => {return (isWinningTriple(3,4,5))}
   const row3 = () => {return (isWinningTriple(6,7,8))}
@@ -10,6 +36,30 @@ const gameBoard = (function () {
   const col3 = () => {return (isWinningTriple(2,5,8))}
   const diag1 = () => {return (isWinningTriple(0,4,8))}
   const diag2 = () => {return (isWinningTriple(2,4,6))}
+
+  function init() {
+      gameBoardArr = [null, null, null, null, null, null, null, null, null];
+      document.querySelectorAll('.cellBtn').forEach(cellBtn => {
+          cellBtn.addEventListener('click', () => updatePlayOnClick(cellBtn));
+        });
+  }
+  // update the gameboard array on click and publish the click event so other modules can fire on click
+  function updatePlayOnClick(cellBtn) {
+    if ((isInPlay()) && (cellBtn.textContent === '')){
+      if (player1.active) {
+        console.log("current player name and symbol is:", player1.name, player1.symbol);
+        gameBoardArr[cellBtn.dataset.cellId] = player1.symbol;
+        player1.active = false;
+        if (isInPlay()) player2.active = true;
+      } else if (player2.active) {
+        console.log("current player name and symbol is:", player2.name, player2.symbol)
+        gameBoardArr[cellBtn.dataset.cellId] = player2.symbol;
+        player2.active = false;
+        if (isInPlay()) player1.active = true;
+      }
+      PubSub.publish('button:clicked', { cellBtn, gameBoardArrCopy: [...gameBoardArr] });
+    }
+  }
   function isWinningTriple(x, y, z) {
     if (((gameBoardArr[x]) === 'X' && (gameBoardArr[y] === 'X') && (gameBoardArr[z] === 'X')) 
        || ((gameBoardArr[x]) === 'O' && (gameBoardArr[y] === 'O') && (gameBoardArr[z] === 'O'))) {
@@ -19,7 +69,6 @@ const gameBoard = (function () {
       }
   }
   function isInPlay() {
-    console.log("row1:", row1());
     if (gameBoardArr.includes(null) && (!row1()) && (!row2()) && (!row3()) && (!col1()) && (!col2()) && (!col3()) && (!diag1()) && (!diag2())) {
        console.log("isInPlay true");
        return true;
@@ -27,13 +76,6 @@ const gameBoard = (function () {
       console.log("isInPlay false");
       return false;
     }
-  }
-  function updatePlay(player) {
-    console.log("current player symbol is:", player.symbol)
-    gameBoardArr[player.currentCell] = player.symbol;
-    // console.log("gameboard index being updated is", player.currentCell);
-    // console.log("gameboard array value is", gameBoardArr[player.currentCell]);
-    lastPlayedCell = player.currentCell;
   }
   function result() {
     if (!isInPlay()){
@@ -45,74 +87,64 @@ const gameBoard = (function () {
         else return 'tie';
     }
   }
-  return { gameBoardArr, isInPlay, updatePlay, result };
+  return { init, isInPlay, result };
 })()
 
-function player(name, symbol, active, score) {
-  let currentCell;
-  return { name, active, symbol, currentCell, score };
+function player(name, symbol, active) {
+  return { name, active, symbol };
 }
 
 const displayController = (function() {
-  // const scoreDisplay = document.querySelector('#scoreDisplay');
   const resultDisplay = document.querySelector('#resultDisplay');
-  const cellBtns = document.querySelectorAll('.cellBtn');
-  // scoreDisplay.textContent = '';
-  // playerDisplay.textContent = '';
-  function updateDisplay(gameBoard) { 
-    cellBtns.forEach((cellBtn) => {
-      cellBtn.innerText = gameBoard.gameBoardArr[cellBtn.dataset.cellId];
+  function displayOnCellClick({ cellBtn, gameBoardArrCopy }) {
+        cellBtn.textContent = gameBoardArrCopy[cellBtn.dataset.cellId];
+        cellBtn.style.backgroundColor = '#9bacddff';
+        if (!gameBoard.isInPlay()) postResultMsg(); 
+  }
+  function init() {
+    clearResultMsg();
+    clearGameBoard();
+    PubSub.subscribe('button:clicked', displayOnCellClick);
+  }
+  function postResultMsg(){
+    let result = gameBoard.result();
+    if (result ==='tie') resultDisplay.textContent = "IT'S A TIE";
+    else if (player1.symbol === result) resultDisplay.textContent = `${player1.name} WINS`;
+    else resultDisplay.textContent = `${player2.name} WINS`;
+  }
+  function clearResultMsg(){
+    resultDisplay.textContent = "Play tic tac toe!!!";
+  }
+  function clearGameBoard(){
+    document.querySelectorAll('.cellBtn').forEach(cellBtn => {
+      cellBtn.textContent = '';
+      cellBtn.style.backgroundColor = 'whitesmoke';
     })
   }
-  // function updateScore(result){
-
-  // }
-  function postResultMsg(result){
-    if (result==='tie') resultDisplay.textContent = 'IT A TIE';
-    else resultDisplay.textContent = `${result} WINS`;
-  }
-
-  return {updateDisplay, postResultMsg};
+  return {init};
 })();
 
 
-const player1 = player('john', 'X', false, 0);
-const player2 = player('jane', 'O', false, 0);
-player1.active = true;
-const cellBtns = document.querySelectorAll('.cellBtn');
-cellBtns.forEach((cellBtn) => {
-  cellBtn.addEventListener("click", (event) => {
-    currentCell = event.target.dataset.cellId;   
-    if (gameBoard.isInPlay()) { 
-      if (player1.active) {
-        console.log("in play - player1:", player1.name);
-        player1.currentCell = currentCell;
-        gameBoard.updatePlay(player1);
-        player1.active = false;
-        player2.active = true;
-      }else if (player2.active) {
-        console.log("in play - player2:", player2.name);
-        player2.currentCell = currentCell;
-        gameBoard.updatePlay(player2);
-        player2.active = false;
-        player1.active = true;
-      }
-      console.log("Gameboard array currentCell index is", currentCell);
-      console.log("Gameboard array currentCell value is", gameBoard.gameBoardArr[currentCell]);
-      displayController.updateDisplay(gameBoard);
-    } else {
-        if (gameBoard.result() === 'tie') displayController.postResultMsg('tie');
-        else if (gameBoard.result() === player1.symbol) displayController.postResultMsg(player1.name);
-        else displayController.postResultMsg(player2.name);
-    }
-  })
+
+const player1 = player('', 'X', false);
+const player2 = player('', 'O', false);
+
+const addPlayersForm = document.getElementById('addPlayersForm');
+addPlayersForm.addEventListener('submit', function(event) {
+    event.preventDefault();
+    console.log('Form submitted!');
+    const formData = new FormData(addPlayersForm);
+    player1.name = formData.get('player_one');
+    player2.name = formData.get('player_two');
+    player1.active = true;
+    gameBoard.init();
+    displayController.init();
+    this.reset();
 })
 
 
-// if (gameBoard.result() === 'tie') displayController.postResult('tie')
-// else if (gameBoard.result() === player1.symbol) displayController.postResult(player1.name)
-// else displayController.postResult(player2.name)
-    
+
+
 
 
 
