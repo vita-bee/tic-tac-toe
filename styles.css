@@ -63,6 +63,7 @@ p .inline{
     padding: 20px;
     justify-content: left;
     justify-items: left;
+    font-size: 24px;
 }
 
 .contentContainer {
@@ -134,6 +135,12 @@ p .inline{
 
 #resultDisplay {
   color: rgb(18, 167, 87);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+#whoseTurnDisplay {
+  color: rgb(14, 63, 154);
   font-size: 22px;
   font-weight: 800;
 }
